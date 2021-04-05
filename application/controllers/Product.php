@@ -218,6 +218,18 @@ class Product extends CI_Controller {
     	}
 	}
 
+
+	public function barcode() {
+		$generator = new Picqer\Barcode\BarcodeGeneratorJPG();
+		file_put_contents('barcode.jpg', $generator->getBarcode('081231723897', $generator::TYPE_CODABAR));
+	}
+
+	public function genbarcode()
+	{
+		$data = strtoupper(bin2hex(random_bytes(5)));				
+		echo json_encode($data);
+	}
+
 }
 
 /* End of file Product.php */

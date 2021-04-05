@@ -19,6 +19,7 @@
                         <th>Harga Beli</th>         
                         <th>Harga Jual</th>         
                         <th width="1%">Stok</th>          
+                        <th>Barcode</th>          
                         <th>Aksi</th>
                      </tr>
                   </thead>
@@ -32,9 +33,15 @@
                           <td><?php echo number_format($data->buy) ?></td>
                           <td><?php echo number_format($data->price) ?></td>
                           <td><?php echo $data->productStock ?></td>
+                          <td>                            
+                            <?php 
+                            $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
+                            echo '<img src="data:image/png;base64,' . base64_encode($generator->getBarcode($data->barcode, $generator::TYPE_CODE_128,1)) . '">';
+                             ?>
+                          </td>
                           <td>
-                              <button type="button" class="btn btn-primary btn-xs" onclick="edit('<?php echo $data->idProduct ?>')"><i class="fa fa-edit"></i> Edit</button>
-                              <a href="<?php echo base_url('product/hapus/'.$data->idProduct) ?>" onclick="return confirm('Yakin menghapus data ?')" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Hapus</a>
+                              <button type="button" class="btn btn-primary btn-xs" title="Edit" onclick="edit('<?php echo $data->idProduct ?>')"><i class="fa fa-edit"></i></button>
+                              <a href="<?php echo base_url('product/hapus/'.$data->idProduct) ?>" title="Hapus" onclick="return confirm('Yakin menghapus data ?')" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>
                           </td>
                       </tr>
                       <?php } ?>
@@ -61,10 +68,16 @@
             <form action="#" id="form" class="form-horizontal">
                 <div class="form-body">                  
                   <div class="form-group">
-                      	<label class="control-label col-md-3">Kode Barcode</label>
+                    	<label class="control-label col-md-3">Kode Barcode</label>
                     	<div class="col-md-9">
-                        <input name="barcode" placeholder="Kode Barcode" class="form-control" type="text">
-                      	</div>
+                         <div class="input-group">
+                            <!-- <input type="text" class="form-control" placeholder="Search for..."> -->
+                            <input name="barcode" placeholder="Kode Barcode" class="form-control" type="text">
+                            <span class="input-group-btn">
+                              <button class="btn btn-success generatebarcode" type="button">Generate</button>
+                            </span>
+                          </div><!-- /input-group -->
+                    	</div>
                   </div>
                   <div class="form-group">
                       	<label class="control-label col-md-3">Nama Produk</label>
@@ -245,4 +258,16 @@
         x = x.replace(/^,/, ""); // Remove leading comma
         input.value = x;
     }
+
+    $('.generatebarcode').on('click',function(){
+      $.ajax({
+        url : "<?php echo site_url('index.php/product/genbarcode')?>",
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+          $('[name="barcode"]').val(data);
+        }
+      });
+    });
 </script>

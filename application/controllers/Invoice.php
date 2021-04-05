@@ -187,7 +187,7 @@ class Invoice extends CI_Controller {
 	public function query_cari()
 	{
 		$keyword = $this->input->post('search_keyword');
-		$data = $this->db->query("SELECT * FROM g_products WHERE productName LIKE '%$keyword%' LIMIT 10")->result();
+		$data = $this->db->query("SELECT * FROM g_products WHERE productIndex = '1' AND productName LIKE '%$keyword%' LIMIT 10")->result();
 		// $data = $this->db->get('g_products')->result();
 		echo json_encode($data);
 	}
